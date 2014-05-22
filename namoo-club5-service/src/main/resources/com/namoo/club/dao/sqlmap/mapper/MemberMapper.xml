@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.namoo.club.dao.sqlmap.mapper.MemberMapper">
+	
+	<!-- Community -->
+	<resultMap type="CommunityMember" id="result-communityMember">
+        <result property="communityNo"      column="com_no" javaType="int" />
+        
+        <result property="rolePerson.email" column="email"  javaType="string" />
+        <result property="rolePerson.name"  column="name"   javaType="string" />
+	</resultMap>
+	
+	<resultMap type="CommunityManager" id="result-communityManager">
+        <result property="communityNo"      column="com_no" javaType="int" />
+        
+        <result property="rolePerson.email" column="email"  javaType="string" />
+        <result property="rolePerson.name"  column="name"   javaType="string" />
+	</resultMap>
+	
+	
+	<insert id="insertCommunityMember" parameterType="CommunityMember">
+		INSERT INTO communityMember(
+							com_no
+							, email
+							, is_manager
+						) VALUES (
+						#{communityNo}
+						, #{email}
+						, '2'
+						)
+	
+	</insert>
+	
+	<insert id="insertCommunityManager" parameterType="CommunityManager">
+		INSERT INTO communityMember(
+		                	com_no
+		                	, email
+		                	, is_manager
+                	) VALUES (
+                			#{communityNo}
+                			, #{email}
+                			, '1'
+           			)
+	</insert>
+	
+	<select id="selectCommunityMember" parameterType="map" resultMap="result-communityMember">
+		SELECT
+			a.com_no
+			, a.email
+			, b.name 
+		FROM communityMember A 
+		JOIN user b ON a.email = b.email 
+		WHERE a.com_no = #{communityNo} 
+		AND a.email = #{email}
+	</select>	
+	
+	<select id="selectCommunityManager" parameterType="int" resultMap="result-communityManager">
+		SELECT 
+			 a.com_no
+			 , a.email
+			 , a.is_manager
+			 , b.name 
+		FROM communityMember a
+		JOIN user b ON a.email = b.email 
+		WHERE a.com_no = #{communityNo} 
+		AND a.is_manager ='1'
+	</select>
+	
+	<select id="selectAllCommunityMembers" parameterType="int" resultMap="result-communityMember">
+		SELECT
+			a.com_no
+			, a.email
+			, a.is_manager
+			, b.name 
+		FROM communityMember A 
+		JOIN user b ON a.email = b.email 
+		WHERE com_no = #{communityNo}  
+		ORDER BY com_no
+	</select>
+	
+	<delete id="deleteAllCommunityMembers" parameterType="int">
+		DELETE FROM communityMember 
+		WHERE com_no = #{communityNo} 
+		AND is_manager = '2'
+	</delete>
+	
+	<delete id="delteCommunityMember" parameterType="map">
+		DELETE FROM communityMember 
+		WHERE com_no = #{communityNo} 
+		AND is_manager = '2' 
+		AND email = #{email}
+	</delete>
+	
+	<delete id="delteCommunityManager" parameterType="int">
+		DELETE FROM communityMember 
+		WHERE com_no = #{communityNo} 
+		AND is_manager = '1'
+	</delete>
+	
+	
+	<!-- Club -->
+	<resultMap type="ClubMember" id="result-clubMember">
+      <!-- <id property="uid" column="uid" javaType="string" />  -->  
+        <result     property="clubNo"      column="club_no"   javaType="int" />
+        <result property="type" column="type" javaType="string" jdbcType="CHAR"/>
+        
+        <result property="rolePerson.email" column="email" javaType="string" />
+        <result property="rolePerson.name"  column="name" javaType="string" />
+	</resultMap>
+	
+	<resultMap type="ClubManager" id="result-clubManager">
+        <result property="clubNo"          column="club_no" javaType="int" />
+        <result property="kingManager"     column="king_yn" javaType="boolean" jdbcType="CHAR"/>
+        
+        <result property="rolePerson.email" column="email"  javaType="string" />
+        <result property="rolePerson.name"  column="name"   javaType="string" />
+	</resultMap>
+	
+	<insert id="insertClubMember" parameterType="ClubMember">
+		INSERT INTO clubMember (
+					club_no
+					, email
+					, type
+				) VALUES(
+					#{clubNo}
+					, #{email}
+					, 'c'
+				)
+	</insert>
+	
+	<insert id="insertClubManager" parameterType="ClubManager">
+		INSERT INTO clubMember (
+					club_no
+					, email
+					, type
+				) VALUES (
+					#{clubNo}
+					, #{email}
+					<choose>
+						<when test="kingManager">, 'a'</when>
+						<otherwise>, 'b'</otherwise>
+					</choose>
+				)
+	</insert>
+	
+	<select id="selectAllClubMembers" parameterType="int" resultMap="result-clubMember">
+		SELECT 
+			<!-- concat(a.club_no, a.email) as uid -->
+			 a.club_no
+			, a.email
+			, b.name 
+		FROM clubMember a 
+		JOIN user b ON a.email = b.email 
+		WHERE club_no = #{clubNo} 
+		ORDER BY email
+	</select>
+	
+	<select id="selectAllClubManagers" parameterType="int" resultMap="result-clubManager">
+		SELECT 
+			a.club_no
+			, a.email
+			, CASE type WHEN 'a' THEN 'Y' ELSE 'N' END as king_yn
+			, b.name
+			FROM clubMember a 
+			JOIN user b ON a.email = b.email 
+			WHERE club_no = #{clubNo} 
+			AND type IN ('a', 'b') 
+			ORDER BY club_no
+	</select>
+	
+	<select id="selectClubMember" parameterType="map" resultMap="result-clubMember">
+		SELECT 
+			<!-- concat(a.club_no, a.email) as uid, -->
+			a.club_no
+			, a.email
+			, b.name 
+		FROM clubMember A 
+		JOIN user b ON a.email = b.email 
+		WHERE a.club_no = #{clubNo} 
+		AND a.email = #{email}
+	</select>
+	
+	<select id="selectClubManager" parameterType="map" resultMap="result-clubManager">
+		SELECT 
+			a.club_no
+			, a.email
+			, 'N' as king_yn
+			, b.name
+		FROM clubMember A 
+		JOIN user b ON a.email = b.email 
+		WHERE a.club_no = #{clubNo} 
+		AND a.type = 'b'
+		AND a.email =  #{email}
+	</select>
+	
+	<select id="selectClubKingManager" parameterType="int" resultMap="result-clubManager">
+		SELECT 
+			a.club_no
+			, a.email
+			, a.type
+			, b.name
+			FROM clubMember a
+			JOIN user b ON a.email = b.email 
+			WHERE a.club_no = #{clubNo} 
+			AND a.type = 'a'
+	</select>
+	
+	<delete id="delteAllClubMembers" parameterType="int">
+		DELETE FROM clubMember WHERE club_no = #{clubNo} AND type = 'c' 
+	</delete>
+	
+	<delete id="delteAllClubManagers" parameterType="int">
+		DELETE FROM clubMember WHERE club_no = #{clubNo} AND type = 'b'
+	</delete>
+
+	<delete id="deleteClubMember" parameterType="map">
+		DELETE FROM clubMember 
+		WHERE club_no = #{clubNo} 
+		AND email = #{email}
+		AND type = 'c'
+	</delete>	
+	
+	<delete id="deleteClubManager" parameterType="map">
+		DELETE FROM clubMember 
+		WHERE club_no = #{clubNo} 
+		AND email = #{email}
+		AND type = 'b'
+	</delete>
+	
+	<delete id="deleteClubKingManager" parameterType="int">
+		DELETE FROM clubMember WHERE club_no = #{clubNo} AND type = 'a'
+	</delete>
+	
+</mapper>

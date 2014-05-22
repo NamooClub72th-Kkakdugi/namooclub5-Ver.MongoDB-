@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="com.namoo.club.dao.sqlmap.mapper.ClubMapper">
+	
+	<resultMap type="Club" id="result-club">
+		<id     property="clubNo"      column="club_no"     javaType="int"/>
+		<result property="comNo"       column="com_no"      javaType="int"/>
+		<result property="categoryNo"  column="category_no" javaType="int"/>
+		<result property="name"        column="club_nm"     javaType="string"/>
+		<result property="description" column="club_des"    javaType="string"/>
+		<result property="openDate"    column="club_date"   javaType="Date"/>
+	</resultMap>
+	
+	<select id="selectAllClubsByComNo" parameterType="int" resultMap="result-club">
+		SELECT club_no
+			, category_no
+			, club_nm
+			, club_des
+			, club_date 
+		FROM club 
+		WHERE com_no = #{comNo}
+		ORDER BY club_no
+	</select>
+	
+	<select id="selectAllClubs" resultMap="result-club">
+		SELECT club_no
+			, category_no
+			, club_nm
+			, club_des
+			, club_date 
+		FROM club 
+		ORDER BY club_no
+	</select>
+	
+	<select id="selectClub" parameterType="int" resultMap="result-club">
+		SELECT club_no
+			, com_no
+			, category_no
+			, club_nm
+			, club_des
+			, club_date
+		FROM club
+		WHERE club_no=#{clubNo}
+	</select>
+	
+	<insert id="insertClub" parameterType="Club" useGeneratedKeys="true" keyProperty="clubNo">
+		INSERT INTO club(
+			com_no
+			, category_no
+			, club_nm
+			, club_des
+			, club_date
+		) VALUES (
+			#{comNo}
+			, #{categoryNo}
+			, #{name}
+			, #{description}
+			, sysDate()
+		)
+	</insert>
+	
+	<update id="updateClub" parameterType="Club">
+		UPDATE club
+		SET club_nm = #{name}
+			, club_des = #{description}
+			, club_date = sysDate()
+		WHERE club_no = #{clubNo}
+	</update>
+	
+	<delete id="deleteClub">
+		DELETE FROM club WHERE club_no = #{clubNo}
+	</delete>
+
+
+</mapper>

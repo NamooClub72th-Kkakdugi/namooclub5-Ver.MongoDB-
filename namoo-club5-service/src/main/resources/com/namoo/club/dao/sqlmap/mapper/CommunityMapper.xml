@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.namoo.club.dao.sqlmap.mapper.CommunityMapper">
+
+	<resultMap type="Community" id="result-community">
+		<id     property="comNo"       column="com_no"   javaType="int"/>
+		<result property="name"        column="com_nm"   javaType="string"/>
+		<result property="description" column="com_des"  javaType="string"/>
+		<result property="openDate"    column="com_date" javaType="Date"/>
+	</resultMap>
+	
+	<resultMap type="ClubCategory" id="result-clubCategory">
+		<result property="categoryNo" column="category_no" javaType="int"/>
+		<result property="communityNo" column="com_no" javaType="int"/>
+		<result property="categoryName" column="category_nm" javaType="string"/>
+	</resultMap>
+	
+	<!-- Community -->
+	<insert id="insertCommunity" parameterType="Community" useGeneratedKeys="true" keyProperty="comNo">
+ 		INSERT INTO community(
+ 			com_nm
+ 			, com_des
+ 			, com_date
+ 		) VALUES (
+ 			#{name}
+ 			, #{description}
+ 			, sysDate()
+ 		)
+	</insert>
+	
+	<select id="selectAllCommunities" resultMap="result-community">
+		SELECT com_no
+			, com_nm
+			, com_des
+			, com_date
+		FROM community 
+		ORDER BY com_no
+	</select>
+	
+	<select id="selectCommunity" parameterType="int" resultMap="result-community">
+		SELECT com_no
+			, com_nm
+			, com_des
+			, com_date 
+		FROM community 
+		WHERE com_no = #{comNo}
+	</select>
+
+	<update id="updateCommunity">
+		UPDATE community 
+		SET com_nm = #{name}
+			, com_des = #{description}
+			, com_date = sysDate() 
+		WHERE com_no = #{comNo}
+	</update>	
+	
+	<delete id="deleteCommunity">
+		DELETE FROM community
+		WHERE com_no = #{comNo}
+	</delete>
+	
+	<!-- Category -->
+	<insert id="insertClubCategory" parameterType="ClubCategory" >
+		INSERT INTO clubCategory (
+			category_no
+			, com_no
+			, category_nm
+		) VALUES (
+			#{categoryNo}
+			, #{communityNo}
+			, #{categoryName}
+		)
+	</insert>
+
+	<select id="selectAllCategories" parameterType="int" resultMap="result-clubCategory">
+		SELECT category_no
+			, com_no
+			, category_nm 
+		FROM clubCategory 
+		WHERE com_no=#{commmunityNo}
+		ORDER BY category_no
+	</select>
+	
+	<delete id="deleteAllCategories"> 
+		DELETE FROM clubCategory 
+		WHERE com_no = #{commmunityNo}
+	</delete>
+</mapper>

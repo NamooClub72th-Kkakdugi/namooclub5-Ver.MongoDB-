@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+<mapper namespace="com.namoo.club.dao.sqlmap.mapper.UserMapper">
+<!-- ResultMap For User -->
+	<resultMap type="User" id="result-user">
+        <id     property="email"    column="email"    javaType="string" />
+        <result property="name"     column="user_nm"  javaType="string" />
+        <result property="password" column="password" javaType="string" />
+	</resultMap>
+	
+	
+	<select id="selectUser" parameterType="string" resultMap="result-user">
+		SELECT email
+			, name
+			, password 
+		FROM user 
+		WHERE email = #{email}
+	</select>
+	
+	<select id="selectAllUsers" resultMap="result-user">
+		SELECT email
+			, name
+			, password 
+		FROM user 
+		ORDER BY email
+	</select>
+	
+	<insert id="insertUser" parameterType="User">
+		INSERT INTO user (
+					email
+					, name
+					, password
+				) VALUES(
+					#{email}
+					, #{name}
+					, #{password}
+				)	
+	</insert>
+	
+	<update id="updateUser" parameterType="User">
+		UPDATE user 
+		 <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="password != null">password = #{password}</if>
+        </set>
+        WHERE email = #{email}
+	</update>
+	
+	<delete id="deleteUser" parameterType="string">
+		DELETE FROM user WHERE email = #{email}
+	</delete>
+</mapper>
