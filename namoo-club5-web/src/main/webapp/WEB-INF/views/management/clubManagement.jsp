@@ -58,7 +58,7 @@
         <!-- ★★★ Contents -->
         <div class="col-sm-9 col-lg-9">
             <div class="page-header2">
-                <h3>커뮤니티관리</h3>
+                <h3>클럽관리</h3>
             </div>
 
             <!-- ★★★ Tab Menu -->

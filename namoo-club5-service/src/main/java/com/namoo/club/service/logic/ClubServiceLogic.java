@@ -43,6 +43,7 @@ public class ClubServiceLogic implements ClubService {
 		int clubNo = clubDao.createClub(club);
 
 		memberDao.addClubManager(new ClubManager(clubNo, person, true));
+		memberDao.addClubMember(new ClubMember(clubNo, person));
 		return club;
 	}
 
@@ -130,9 +131,6 @@ public class ClubServiceLogic implements ClubService {
 			throw NamooClubExceptionFactory.createRuntime("존재하지 않는 클럽입니다.");
 		}
 		if (forcingRemove) {
-			memberDao.deleteAllClubMember(clubNo);
-			memberDao.deleteAllClubManager(clubNo);
-			memberDao.deleteClubKingManager(clubNo);
 			clubDao.deleteClub(clubNo);
 		} else {
 		throw NamooClubExceptionFactory.createRuntime("멤버부터 탈퇴시키세요.");
@@ -233,19 +231,21 @@ public class ClubServiceLogic implements ClubService {
 	public void commissionManagerClub(int clubNo, SocialPerson originPerson, SocialPerson nwPerson) {
 		//
 		memberDao.deleteClubManager(clubNo, originPerson.getEmail());
-		memberDao.addClubMember(new ClubMember(clubNo, originPerson));
-		memberDao.deleteClubMember(clubNo, nwPerson.getEmail());
-		memberDao.addClubManager(new ClubManager(clubNo, nwPerson));
+		ClubManager clubManager = new ClubManager(clubNo, nwPerson, false);
+		memberDao.addClubManager(clubManager);
 	}
 
 	@Override
 	public void commissionKingManagerClub(int clubNo, SocialPerson originPerson, SocialPerson nwPerson) {
 		//
-		memberDao.deleteClubKingManager(clubNo);
-		memberDao.addClubManager(new ClubManager(clubNo, originPerson, false));
-		memberDao.deleteClubManager(clubNo, nwPerson.getEmail());
-		memberDao.addClubManager(new ClubManager(clubNo, nwPerson, true));
-	}
+		// 기존의 킹매니저를 매니저로
+		ClubManager clubManager = new ClubManager(clubNo, originPerson, false);
+		memberDao.updateClubManager(clubManager);
+		
+		// 기존의 매니저를 킹매니저로
+		clubManager = new ClubManager(clubNo, nwPerson, true);
+		memberDao.updateClubManager(clubManager);
+	} 
 
 	@Override
 	public List<ClubManager> findAllClubManager(int clubNo) {
@@ -285,7 +285,4 @@ public class ClubServiceLogic implements ClubService {
 		memberDao.deleteClubMember(clubNo, person.getEmail());
 		memberDao.addClubManager(new ClubManager(clubNo, person, false));
 	}
-
-	
-
 }

@@ -44,6 +44,8 @@ public class CommunityServiceLogic implements CommunityService {
 		int communityNo = dao.createCommunity(community);
 		CommunityManager comManager = new CommunityManager(communityNo, person);
 		memberDao.addCommunityManager(comManager);
+		CommunityMember comMember = new CommunityMember(communityNo, person);
+		memberDao.addCommunityMember(comMember);
 
 		// 카테고리 추가
 		registCategory(communityNo, categories);
@@ -55,7 +57,7 @@ public class CommunityServiceLogic implements CommunityService {
 		//
 		for (ClubCategory category : categories) {
 			category.setCommunityNo(communityNo);
-			dao.createClubCategory(category);
+			dao.insertClubCategory(categories);
 		}
 	}
 
@@ -173,9 +175,6 @@ public class CommunityServiceLogic implements CommunityService {
 		//
 		if (forcingRemove) {
 			deleteAllClubs(communityNo);
-			dao.deleteAllClubCategory(communityNo);
-			memberDao.deleteAllComMember(communityNo);
-			memberDao.deleteCommunityManager(communityNo);
 			dao.deleteCommunity(communityNo);
 		} else {
 			throw NamooClubExceptionFactory.createRuntime("하위 클럽부터 삭제하세요.");
@@ -186,9 +185,6 @@ public class CommunityServiceLogic implements CommunityService {
 		//
 		List<Club> clubs = clubDao.readAllClubsByComNo(comNo);
 			for (Club club : clubs) {
-				memberDao.deleteClubKingManager(club.getClubNo());
-				memberDao.deleteAllClubManager(club.getClubNo());
-				memberDao.deleteAllClubMember(club.getClubNo());
 				clubDao.deleteClub(club.getClubNo());
 			}
 	}
@@ -260,16 +256,14 @@ public class CommunityServiceLogic implements CommunityService {
 		if (community == null) {
 			throw NamooClubExceptionFactory.createRuntime("커뮤니티가 존재하지 않습니다.");
 		}
-		memberDao.deleteCommuninyMember(communityNo, email);
+		memberDao.deleteCommunityMember(communityNo, email);
 	}
 
 	@Override
 	public void commissionManagerCommunity(int communityNo, SocialPerson originPerson, SocialPerson nwPerson) {
 		//
-		memberDao.deleteCommunityManager(communityNo);
-		memberDao.addCommunityMember(new CommunityMember(communityNo, originPerson));
-		memberDao.deleteCommuninyMember(communityNo, nwPerson.getEmail());
-		memberDao.addCommunityManager(new CommunityManager(communityNo, nwPerson));
+		CommunityManager comManager = new CommunityManager(communityNo, nwPerson);
+		memberDao.updateCommunityManager(comManager);
 	}
 
 	@Override

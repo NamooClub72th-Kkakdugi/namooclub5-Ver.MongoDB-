@@ -10,23 +10,22 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.namoo.club.shared.BaseMongoTestCase;
 
 import dom.entity.Club;
 import dom.entity.ClubMember;
 import dom.entity.SocialPerson;
 
-
-public class ClubServiceTest extends DbCommonTest {
+@UsingDataSet(locations="/com/namoo/club/service/facade/clubs.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT)
+public class ClubServiceTest extends BaseMongoTestCase {
 	//
-	private static final String DATASET_XML="ClubServiceTest_dataset.xml";
-	
 	@Autowired
 	private ClubService clubService;
 
 	//-------------------------------------------------------------
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testRegistClub() {
 		//
 		Club club = clubService.registClub(1, 1, "TestClub", "TestClub's description", "wntjd");
@@ -42,7 +41,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindClub() {
 		//
 		Club club = clubService.findClub(1);
@@ -59,7 +57,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 	
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testJoinAsMember() {
 		//
 		clubService.joinAsMember(4, "wntjd");
@@ -70,7 +67,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindAllClubs() {
 		//
 		List<Club> clubs = clubService.findAllClubsByComNo(1);
@@ -80,7 +76,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindClubMember() {
 		//
 		ClubMember clubMember = clubService.findClubMember(1, "wntjd");
@@ -93,7 +88,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindAllClubMember() {
 		//
 		List<ClubMember> clubMembers = clubService.findAllClubMember(1);
@@ -104,7 +98,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testRemoveClub() {
 		//
 		clubService.removeClub(1, true);
@@ -117,7 +110,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindBelongClubs() {
 		//
 		List<Club> clubs = clubService.findBelongClubs("wntjd", 1);
@@ -128,7 +120,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindManagedClubs() {
 		//
 		List<Club> managedClubs = clubService.findManagedClubsByComNo("hong", 1);
@@ -140,7 +131,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testWithdrawalClub() {
 		//
 		clubService.withdrawalClub(1, "wntjd");
@@ -150,8 +140,7 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
-	public void testCommissionManagerCommunity() {
+	public void testCommissionManagerClub() {
 		//
 		clubService.commissionManagerClub(1, new SocialPerson("hong", "홍길동"), new SocialPerson("wntjd", "이주성"));
 		//
@@ -163,7 +152,6 @@ public class ClubServiceTest extends DbCommonTest {
 	}
 	
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testCommissionKingManagerClub() {
 		//
 		clubService.commissionKingManagerClub(1, new SocialPerson("ekdgml", "박상희"), new SocialPerson("hong", "홍길동"));

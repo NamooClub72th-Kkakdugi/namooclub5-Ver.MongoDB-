@@ -18,11 +18,9 @@ public class Community {
 	
 	//----------------------------------------------------------------
 	//constructor
-	
 	public Community() {
 		//
 	}
-	
 	public Community(String name, String description) {
 		//
 		this.name = name;
@@ -30,7 +28,6 @@ public class Community {
 		this.categories = new ArrayList<ClubCategory>();
 		this.clubs = new ArrayList<Club>();
 	}
-	
 	public Community(String name, String description, SocialPerson user) {
 		//
 		this.name = name;
@@ -38,77 +35,57 @@ public class Community {
 		this.categories = new ArrayList<ClubCategory>();
 		this.clubs = new ArrayList<Club>();
 	}
-
 	//-------------------------------------------------------------------
 	// getter, setter
-	
 	public int getComNo() {
 		return comNo;
 	}
-	
 	public void setComNo(int comNo) {
 		this.comNo = comNo;
 	}
-	
 	public String getName() {
 		return name;
 	}
-	
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 	public String getDescription() {
 		return description;
 	}
-	
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
 	public Date getOpenDate() {
 		return openDate;
 	}
-	
 	public void setOpenDate(Date openDate) {
 		this.openDate = openDate;
 	}
-	
-	
 	public List<Club> getClubs() {
 		return clubs;
 	}
-	
 	public void setClubs(List<Club> clubs) {
 		this.clubs = clubs;
 	}
-	
 	public List<ClubCategory> getCategories() {
 		return categories;
 	}
-	
 	public void setCategories(List<ClubCategory> categories) {
 		this.categories = categories;
 	}
-	
 	public List<CommunityMember> getMembers() {
 		return members;
 	}
-	
 	public void setMembers(List<CommunityMember> members) {
 		this.members = members;
 	}
-	
 	public CommunityManager getManager() {
 		return manager;
 	}
-	
 	public void setManager(CommunityManager manager) {
 		this.manager = manager;
 	}
-	
 //-----------------------------------------------------------------------------
-
 	public void addCategory(ClubCategory category) {
 		//
 		if (this.categories == null) {
@@ -116,7 +93,6 @@ public class Community {
 		}
 		this.categories.add(category);
 	}
-	
 	public void removeClub(int clubNo) {
 		//
 		Club found = null;
@@ -129,7 +105,6 @@ public class Community {
 			clubs.remove(found);
 		}
 	}
-	
 	public void add() {
 		//
 		

@@ -5,28 +5,27 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.namoo.club.shared.BaseMongoTestCase;
 
 import dom.entity.Club;
 import dom.entity.SocialPerson;
 
-public class ClubDaoTest extends DbCommonTest {
+@UsingDataSet(locations="/com/namoo/club/dao/clubs.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT)
+public class ClubDaoTest extends BaseMongoTestCase {
 	//
-	private static final String DATASET_XML="ClubDaoTest_dataset.xml";
-	
 	@Autowired
 	private ClubDao dao;
 	
 	//-----------------------------------------
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testReadAllClubs() {
 		//
 		assertEquals(4, dao.readAllClubsByComNo(1).size());
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testReadClub() {
 		//
 		Club club = dao.readClub(1);
@@ -37,7 +36,6 @@ public class ClubDaoTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testCreateClub() {
 		//
 		Club club = new Club(1, 1, "club_5", "club_5_des", new SocialPerson("ekdgml", "박상희"));
@@ -51,7 +49,6 @@ public class ClubDaoTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testUpdateClub() {
 		//
 		Club club = dao.readClub(2);
@@ -65,11 +62,9 @@ public class ClubDaoTest extends DbCommonTest {
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testDeleteClub() {
 		//
 		dao.deleteClub(1);
 		assertEquals(3, dao.readAllClubsByComNo(1).size());
 	}
-
 }

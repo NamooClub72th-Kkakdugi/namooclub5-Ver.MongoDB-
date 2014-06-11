@@ -1,6 +1,7 @@
 package dom.entity;
 
 
+
 public class ClubManager  {
 
 	private int clubNo;
@@ -30,10 +31,18 @@ public class ClubManager  {
 		this.kingManager = king; 
 	}
 	//--------------------------------------------------
+	
+	public SocialPerson getRolePerson() {
+		return rolePerson;
+	}
+
+	public void setRolePerson(SocialPerson rolePerson) {
+		this.rolePerson = rolePerson;
+	}
+
 	public String getEmail() {
 		return rolePerson.getEmail();
 	}
-	
 	public String getName() {
 		return rolePerson.getName();
 	}

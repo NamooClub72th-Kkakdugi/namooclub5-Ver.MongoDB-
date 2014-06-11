@@ -5,27 +5,25 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 
 import dom.entity.SocialPerson;
+import com.namoo.club.shared.BaseMongoTestCase;
 
-public class UserDaoTest extends DbCommonTest{
+@UsingDataSet(locations="/com/namoo/club/dao/users.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT)
+public class UserDaoTest extends BaseMongoTestCase{
 	//
-	private static final String DATASET_XML="UserDaoTest_dataset.xml";
-	
 	@Autowired
 	private UserDao dao;
 	
-	//-------------------------------------------------------------------------
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testReadAllUsers() {
 		//
 		assertEquals(3, dao.readAllUsers().size());
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testCreateUser() {
 		//
 		SocialPerson user = new SocialPerson("abcd", "abcd@a.a", "abcd");
@@ -39,7 +37,6 @@ public class UserDaoTest extends DbCommonTest{
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testUpdateUser() {
 		//
 		SocialPerson user = dao.readUser("ekdgml");

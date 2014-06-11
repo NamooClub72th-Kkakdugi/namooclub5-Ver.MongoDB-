@@ -12,16 +12,17 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
+import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
+import com.namoo.club.shared.BaseMongoTestCase;
 
 import dom.entity.ClubCategory;
 import dom.entity.Community;
 import dom.entity.CommunityMember;
 
-public class CommunityServiceTest extends DbCommonTest{
+@UsingDataSet(locations="/com/namoo/club/service/facade/clubs.json", loadStrategy=LoadStrategyEnum.CLEAN_INSERT)
+public class CommunityServiceTest extends BaseMongoTestCase{
 	//
-	private static final String DATASET_XML="CommunityServiceTest_dataset.xml";
-	
 	@Autowired
 	private CommunityService communityService; 
 	@Autowired
@@ -29,7 +30,6 @@ public class CommunityServiceTest extends DbCommonTest{
 	
 	//----------------------------------------------------------------------------------------------
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testRegistCommunity() {
 		//
 		List<ClubCategory> categories = new ArrayList<>();
@@ -37,18 +37,17 @@ public class CommunityServiceTest extends DbCommonTest{
 		ClubCategory category2 = new ClubCategory(2, 4, "category2"); 
 		categories.add(category1);
 		categories.add(category2);
-		Community community = communityService.registCommunity("com4", "com4_des", "ekdgml", categories);
+		Community community = communityService.registCommunity("com3", "com3_des", "ekdgml", categories);
 		
 		//검증
 		community = communityService.findCommunity(community.getComNo());
-		assertEquals(4, communityService.findAllCommunities().size());
+		assertEquals(3, communityService.findAllCommunities().size());
 		assertThat(community.getManager().getEmail(), is("ekdgml"));
 		assertThat(community.getMembers().size(), is(1));
 		assertThat(community.getCategories().size(), is(2));
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindCommunity() {
 		//
 		Community community = communityService.findCommunity(1);
@@ -56,12 +55,11 @@ public class CommunityServiceTest extends DbCommonTest{
 		//검증
 		assertEquals("com1", community.getName());
 		assertEquals("com1_des", community.getDescription());
-		assertThat(community.getManager().getEmail(), is("ekdgml"));
-		assertThat(community.getManager().getName(), is("박상희"));
+		assertThat(community.getManager().getEmail(), is("wntjd"));
+		assertThat(community.getManager().getName(), is("이주성"));
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testJoinAsMemberAndUser() {
 		//
 		communityService.joinAsMember(2, "abcd", "abcdId", "jkl");
@@ -74,7 +72,6 @@ public class CommunityServiceTest extends DbCommonTest{
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testJoinAsMember() {
 		//
 		communityService.joinAsMember(2, "wntjd");
@@ -86,51 +83,46 @@ public class CommunityServiceTest extends DbCommonTest{
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindAllCommunities() {
 		//
 		List<Community> communities = communityService.findAllCommunities();
 		
 		//검증
-		assertEquals(3, communities.size());
+		assertEquals(2, communities.size());
 		assertThat(communities.get(0).getName(), is("com1"));
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testRemoveCommunity() {
 		//
 		communityService.removeCommunity(1, true);
 		
 		List<Community> communities = communityService.findAllCommunities();
-		assertEquals(2, communities.size());
+		assertEquals(1, communities.size());
 		assertThat(communities.get(0).getName(), is("com2"));
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindBelongCommunities() {
 		//
 		List<Community> communities = communityService.findBelongCommunities("ekdgml");
 		
 		//검증
 		assertEquals(1, communities.size());
-		assertThat(communities.get(0).getName(), is("com1"));
+		assertThat(communities.get(0).getName(), is("com2"));
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindManagedCommnities() {
 		//
 		List<Community> communities = communityService.findManagedCommunities("ekdgml");
 		
 		//검증
 		assertEquals(1, communities.size());
-		assertThat(communities.get(0).getName(), is("com1"));
+		assertThat(communities.get(0).getName(), is("com2"));
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testWithdrawalCommunity() {
 		//
 		communityService.withdrawalCommunity(1, "hong");
@@ -141,7 +133,6 @@ public class CommunityServiceTest extends DbCommonTest{
 	}
 
 	@Test
-	@DatabaseSetup(DATASET_XML)
 	public void testFindAllCategories() {
 		//
 		List<ClubCategory> categories = communityService.findAllCategories(1);

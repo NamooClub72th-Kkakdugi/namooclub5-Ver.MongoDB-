@@ -15,23 +15,18 @@ public interface MemberDao {
 	CommunityMember readCommunityMember(int comNo, String email);
 	CommunityManager readCommunityManager(int comNo);
 	List<CommunityMember> readAllCommunityMember(int comNo);
-	void deleteAllComMember(int comNo);
-	void deleteCommuninyMember(int comNo, String email);
-	void deleteCommunityManager(int comNo);
+	void deleteCommunityMember(int comNo, String email);
+	void updateCommunityManager(CommunityManager comManager);
 	
 	//club
 	void addClubMember(ClubMember clubMember);
 	void addClubManager(ClubManager clubManager);
-	void deleteAllClubMember(int clubNo);
-	void deleteAllClubManager(int clubNo);
 	void deleteClubMember(int clubNo, String email);
 	void deleteClubManager(int clubNo, String email);
-	void deleteClubKingManager(int clubNo);
+	void updateClubManager(ClubManager clubManager);
 	List<ClubMember> readAllClubMembers(int clubNo);
 	List<ClubManager> readAllClubManagers(int clubNo);
 	ClubMember readClubMember(int clubNo, String email); 
 	ClubManager readClubManager(int clubNo, String email);
 	ClubManager readClubKingManager(int clubNo);
-	
-
 }
